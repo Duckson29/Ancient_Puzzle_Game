@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Ancient Puzzle Game</string>
+    <string name="btn_NameDan">Genstart</string>
+    <string name="btn_NameEng">Restart</string>
 </resources>
