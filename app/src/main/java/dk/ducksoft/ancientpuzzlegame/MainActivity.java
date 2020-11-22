@@ -41,14 +41,14 @@ public class MainActivity extends AppCompatActivity {
         imageView.setOnDragListener(dragListen);
         imageView.setOnLongClickListener(clickLister);
 
-        ArrayList<ImageView> allTheViews = new ArrayList<>();
 
         GridLayout gridView = this.findViewById(R.id.gridView);
 
         for(int i = 0; i < gridView.getChildCount(); i++){
+            gridView.getChildAt(i).setTag(i);
             gridView.getChildAt(i).setOnDragListener(dragListen);
             gridView.getChildAt(i).setOnLongClickListener(clickLister);
-            gridView.getChildAt(i).setBackground(R.drawable.);
+            gridView.getChildAt(i).setBackground(this.getDrawable(R.drawable.ic_0 + i));
         }
 
 //        imageView.setOnLongClickListener(new View.OnLongClickListener() {

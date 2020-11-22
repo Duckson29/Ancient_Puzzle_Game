@@ -5,30 +5,52 @@ import android.content.ClipDescription;
 import android.content.ClipboardManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.HardwareRenderer;
 import android.graphics.Point;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
+import android.widget.GridLayout;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class MainPresenter implements MainActivityContract.MVPView {
-    public String texts = "s";
-
+    /**
+     * This handles the restart btn as in this resulffus the "Game bord"
+     */
     public void BtnHandler(View v) {
-/*
-this is the android attampt.
-* */
-        ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
-        View.DragShadowBuilder s = new MyDragShadowBuilder(v);
-        ClipData dragData = new ClipData((CharSequence) v.getTag(), new String[] { ClipDescription.MIMETYPE_TEXT_INTENT }, item);
-        v.startDragAndDrop(dragData,s,null,0);
-/*
-* this is my attampt
-* */
-        ClipData data = ClipData.newHtmlText(v.getContentDescription(),"","");
-        Object localData = "asdf";
-        v.startDragAndDrop(data,new View.DragShadowBuilder(),localData,0);
+        Random random = new Random();
+        ArrayList<Integer> usedNumbers = new ArrayList<>();
+
+        GridLayout layout = ((ConstraintLayout) v.getParent()).findViewById(R.id.gridView);
+
+        int randomInt;
+        int index = 0;
+
+        while (index != 9) {
+
+            randomInt = random.nextInt(9);
+
+            while (!usedNumbers.contains(randomInt)) {
+
+                layout.getChildAt(index).setTag(randomInt);
+                layout.getChildAt(index).setBackground(v.getContext().getDrawable(R.drawable.ic_0 + randomInt));
+
+                index++;
+                usedNumbers.add(randomInt);
+            }
+        }
+        for (int s : usedNumbers) {
+
+            Log.e("BtnHandler", ""+s);
+        }
     }
+
 }
 
 class MyDragShadowBuilder extends View.DragShadowBuilder {
@@ -49,7 +71,7 @@ class MyDragShadowBuilder extends View.DragShadowBuilder {
     // Defines a callback that sends the drag shadow dimensions and touch point back to the
     // system.
     @Override
-    public void onProvideShadowMetrics (Point size, Point touch) {
+    public void onProvideShadowMetrics(Point size, Point touch) {
         // Defines local variables
         int width, height;
 

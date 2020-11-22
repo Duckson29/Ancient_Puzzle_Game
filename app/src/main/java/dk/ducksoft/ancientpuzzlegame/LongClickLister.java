@@ -16,13 +16,13 @@ public class LongClickLister implements View.OnLongClickListener {
         // ClipData.newPlainText() can create a plain text ClipData in one step.
 
         // Create a new ClipData.Item from the ImageView object's tag
-        ClipData.Item item = new ClipData.Item(String.valueOf(v.getSourceLayoutResId()));
+        ClipData.Item item = (v.getTag() == null) ? new ClipData.Item(String.valueOf(0)) : new ClipData.Item(v.getTag().toString());
 
         // Create a new ClipData using the tag as a label, the plain text MIME type, and
         // the already-created item. This will create a new ClipDescription object within the
         // ClipData, and set its MIME type entry to "text/plain"
         ClipData dragData = new ClipData(
-                (CharSequence) v.getTag(),
+                item.getText(),
                 new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN},
                 item);
 

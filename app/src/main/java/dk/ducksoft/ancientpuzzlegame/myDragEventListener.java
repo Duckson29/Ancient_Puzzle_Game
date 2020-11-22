@@ -2,20 +2,23 @@ package dk.ducksoft.ancientpuzzlegame;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
+import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
+
 
 public class myDragEventListener implements View.OnDragListener {
 
     private ClipData.Item item;
 
-    // This is the method that the system calls when it dispatches a drag event to the
-    // listener.
+    /**
+     * This is the method that the system calls when it dispatches a drag event to the
+     * listener.
+     **/
     public boolean onDrag(View v, DragEvent event) {
 
         // Defines a variable to store the action type for the incoming event
@@ -23,18 +26,10 @@ public class myDragEventListener implements View.OnDragListener {
 
         // Handles each of the expected events
         switch (action) {
-
             case DragEvent.ACTION_DRAG_STARTED:
-
-                // Determines if this View can accept the dragged data
                 if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-
-                    // As an example of what your application might do,
-                    // applies a blue color tint to the View to indicate that it can accept
-                    // data.
-                    v.setBackgroundColor(Color.BLUE);
-
-                    // Invalidate the view to force a redraw in the new tint
+                    // We don't understand WHY this has to be here....
+                    // it just wont work with out
                     v.invalidate();
 
                     // returns true to indicate that the View can accept the dragged data.
@@ -48,9 +43,21 @@ public class myDragEventListener implements View.OnDragListener {
 
             case DragEvent.ACTION_DRAG_ENTERED:
 
-                // Applies a green tint to the View. Return true; the return value is ignored.
+                //TODO: make a if clicked item is next to the box that contains "0" in either row or column then allow drag.
 
-                v.setBackgroundColor(Color.GREEN);
+                //Applies a green tint to the View. Return true; the return value is ignored.
+                if ((v.getTag() != null) && (int) v.getTag() == 0)
+                    v.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+                // Invalidate the view to force a redraw in the new tint
+                v.invalidate();
+                return true;
+
+            case DragEvent.ACTION_DRAG_EXITED:
+
+                /*
+                * Resets the "Game Bord" to the default black color
+                * */
+                v.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
 
                 // Invalidate the view to force a redraw in the new tint
                 v.invalidate();
@@ -58,18 +65,6 @@ public class myDragEventListener implements View.OnDragListener {
                 return true;
 
             case DragEvent.ACTION_DRAG_LOCATION:
-
-                // Ignore the event
-                return true;
-
-            case DragEvent.ACTION_DRAG_EXITED:
-
-                // Re-sets the color tint to blue. Returns true; the return value is ignored.
-                v.setBackgroundColor(Color.BLUE);
-
-                // Invalidate the view to force a redraw in the new tint
-                v.invalidate();
-
                 return true;
 
             case DragEvent.ACTION_DROP:
@@ -78,9 +73,20 @@ public class myDragEventListener implements View.OnDragListener {
                 item = event.getClipData().getItemAt(0);
 
                 CharSequence data = item.getText();
-                ((ImageView)v).setImageResource(Integer.parseInt(data.toString()));
+
                 // Turns off any color tints
-                v.setBackgroundColor(Color.BLACK);
+                if ((int) v.getTag() == 0) {
+                    int tagZero = 0;
+                    View iv = ((GridLayout) v.getParent()).findViewWithTag(Integer.parseInt(data.toString()));
+                    iv.setBackground(v.getContext().getDrawable(R.drawable.ic_0));
+                    iv.setTag(tagZero);
+
+                    int tagNew = Integer.parseInt(data.toString());
+                    v.setBackground(v.getContext().getDrawable(R.drawable.ic_0 + Integer.parseInt(data.toString())));
+                    v.setTag(tagNew);
+                }
+
+                v.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
 
                 // Invalidates the view to force a redraw
                 v.invalidate();
@@ -90,23 +96,13 @@ public class myDragEventListener implements View.OnDragListener {
 
             case DragEvent.ACTION_DRAG_ENDED:
 
-                // Turns off any color tinting
-                v.setBackgroundColor(Color.WHITE);
-
+                /*
+                 * Resets the "Game Bord" to the default black color
+                 * */
+                v.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
                 // Invalidates the view to force a redraw
                 v.invalidate();
-
-                // Does a getResult(), and displays what happened.
-                if (event.getResult()) {
-                    Log.e("drop result", "true in event.getresult()");
-
-                } else {
-
-                    Log.e("drop result", "false in event.getresult()");
-
-                }
-
-                // returns true; the value is ignored.
+                Log.e("","");
                 return true;
 
             // An unknown action type was received.
